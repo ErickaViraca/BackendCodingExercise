@@ -8,7 +8,7 @@ namespace BackendCodingExercise.Services
 {
     public interface IBillableTransactionService
     {
-        Transaction RegisterProfile(Transaction transaction);
+        Transaction RegisterTransaction(Transaction transaction);
         Transaction UpdateBillingStatus(string id, Transaction transaction);
         Transaction GenerateInvoicesByDateRange(DateTime startDate, DateTime endDate);
     }
