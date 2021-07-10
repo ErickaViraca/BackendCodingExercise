@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using BillableTransactionDatabase.Models;
 using BillableTransactionDatabase.Repository;
-using BillableTransactions.Models;
 using Microsoft.Extensions.Logging;
 
 namespace BackendCodingExercise.Services
@@ -15,19 +16,32 @@ namespace BackendCodingExercise.Services
             _loggerBillableTransaction = logger;
             _uow = uow;
         }
-        public Transaction GenerateInvoicesByDateRange(DateTime startDate, DateTime endDate)
-        {
-            throw new NotImplementedException();
-        }
 
         public Transaction RegisterTransaction(Transaction transaction)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _uow.BillableTransaction.Create(transaction);
+                _uow.Save();
+                return transaction;
+            }
+            catch (Exception ex)
+            {
+                throw new NotImplementedException();
+            }
+            
         }
 
-        public Transaction UpdateBillingStatus(string id, Transaction transaction)
+        public Transaction UpdateBillingStatus(string id, string transactionStatus)
         {
-            throw new NotImplementedException();
+            Transaction transaction = _uow.BillableTransaction.UpdateBillingStatus(id, transactionStatus);
+            _uow.Save();
+            return transaction;
+        }
+
+        public IEnumerable<Transaction> GenerateInvoicesByDateRange(DateTime startDate, DateTime endDate)
+        {
+            return _uow.BillableTransaction.GetBillableTransactionsByDateRange();
         }
     }
 }

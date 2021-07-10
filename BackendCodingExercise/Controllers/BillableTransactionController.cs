@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Threading.Tasks;
+using BackendCodingExercise.Models;
+using BackendCodingExercise.Services;
+using BillableTransactionDatabase.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackendCodingExercise.Controllers
@@ -7,36 +11,49 @@ namespace BackendCodingExercise.Controllers
     [ApiController]
     public class BillableTransactionController : ControllerBase
     {
-        // GET api/values
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        private readonly IBillableTransactionService _billableTransactionService;
+
+        public BillableTransactionController(IBillableTransactionService billableTransactionService)
         {
-            return new string[] { "value1", "value2" };
+            _billableTransactionService = billableTransactionService;
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/values
+        /// <summary>
+        /// Save new transaction
+        /// </summary>
+        /// <param name="user">Profile user information to save</param>
+        /// <returns>returns a profile information that was stored</returns>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> CreateTransaction([FromBody] TransactionRequest transactionRequest)
         {
+            Transaction transaction = DAOFactory.GetDaoProfile(transactionRequest);
+            return Ok(_billableTransactionService.RegisterTransaction(transaction));
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        /// <summary>
+        /// Update status of transaction.
+        /// </summary>
+        /// <param name="userId">transaction id by wich the transaction will be searched</param>
+        /// <param name="status">transaction status information to update</param>
+        /// <returns>returns a transaction information that was updated</returns>
+        [HttpPut]
+        [Route("{id}/status")]
+        public async Task<IActionResult> UpdateTransactionStatus(string transactionId, [FromQuery] string transactionStatus)
         {
+            Transaction transaction = _billableTransactionService.UpdateBillingStatus(transactionId, transactionStatus);
+            return Ok(transaction);
         }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        /// <summary>
+        /// return all transactions at database by date range
+        /// </summary>
+        /// /// <param name="startDate">start date by wich the transactions will be searched</param>
+        /// /// <param name="endDate">end date by wich the transactions will be searched</param>
+        /// <returns>Returns all transactions information found</returns>
+        [HttpGet]
+        public async Task<IActionResult> GetAllTransactionsByDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
         {
+            return Ok(_billableTransactionService.GenerateInvoicesByDateRange(startDate, endDate));
         }
     }
 }
