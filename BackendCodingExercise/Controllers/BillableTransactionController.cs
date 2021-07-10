@@ -8,7 +8,7 @@ namespace BackendCodingExercise.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class BillableTransactionController : ControllerBase
     {
         // GET api/values
         [HttpGet]

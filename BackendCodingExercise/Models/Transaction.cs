@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BillableTransactions.Models
 {
-    class Transaction
+    public class Transaction
     {
         public DateTime date { get; set; }
         public int amount { get; set; }
