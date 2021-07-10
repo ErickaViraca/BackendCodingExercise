@@ -1,2 +1,2 @@
 # BackendCodingExercise
-Backend Coding Exercise
+Billable Transactions is the project proposed on the Backend Coding Exercise
